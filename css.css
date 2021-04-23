@@ -1,6 +1,6 @@
 body
 {
-	background-color: brown;
+	background-color: #555555;
 }
 
 .bar
@@ -12,7 +12,6 @@ body
 }
 .bar a
 {
-	display: inline-block;
 	text-decoration: none;
 	display: block;
 	color: white;
@@ -33,9 +32,89 @@ body
 
 .logo
 {
+	display: inline-block;
 	position: relative;
 	padding-left: 10px;
 	margin-bottom: -40px;
 	margin-right: 5px;
 	bottom: 12px;
+}
+
+.search
+{
+	position: absolute;
+	display: inline-block;
+	left: 80%;
+}
+
+.Loginbox
+{
+	position: relative;
+	display: block;
+	background-color: #222222;
+	width: 450px;
+	padding-bottom: 300px;
+	left: 50%;
+	margin-top: 10px;
+	transform: translateX(-50%);
+}
+.Loginbox a
+{
+	position: absolute;
+	display: block;
+	left: 50%;
+	transform: translateX(-50%);
+	top: 300px;
+	text-decoration: none;
+	color: #FFFF00;
+
+}
+.Loginbox h1
+{
+	position: relative;
+	text-align: center;
+	bottom: 40%;
+}
+.Loginbox div
+{
+	display: block;
+	background-color: #111111;
+	position: absolute;
+	width: 50%;
+	margin-top: 4%;
+	transform: translate(50%, 50%);
+}
+.Loginbox form
+{
+	display: block;
+	position: relative;
+	width: 50%;
+	left: 50%;
+	transform: translateX(-50%);
+	width: auto;
+	height: auto;
+}
+.Loginbox form ul
+{
+	width: 50%;
+	display: block;
+	position: relative;
+	width: auto;
+	height: auto;
+}
+.Loginbox form ul li
+{
+	display: block;
+	position: relative;
+	width: auto;
+	height: auto;
+}
+.Loginbox form ul li input
+{
+	display: block;
+	position: relative;
+	left: 50%;
+	transform: translateX(-50%);
+	margin-left: -15px;
+	margin-top: 8px;
 }
