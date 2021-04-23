@@ -1,0 +1,41 @@
+body
+{
+	background-color: brown;
+}
+
+.bar
+{
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #2e2e2e;
+}
+.bar a
+{
+	display: inline-block;
+	text-decoration: none;
+	display: block;
+	color: white;
+	background-color: #2e2e2e;
+	padding: 20px;
+	margin: 0;
+	font-size: 20px;
+	display: inline-block;
+}
+.bar a:hover
+{
+	background-color: #222222;
+}
+.bar a:active
+{
+	background-color: black;
+}
+
+.logo
+{
+	position: relative;
+	padding-left: 10px;
+	margin-bottom: -40px;
+	margin-right: 5px;
+	bottom: 12px;
+}
