@@ -73,6 +73,7 @@ body
 {
 	position: relative;
 	text-align: center;
+	color: white;
 	bottom: 40%;
 }
 .Loginbox div
@@ -117,4 +118,75 @@ body
 	transform: translateX(-50%);
 	margin-left: -15px;
 	margin-top: 8px;
+}
+
+.itemframe
+{
+	position: relative;
+	display: inline-block;
+	background-color: #222222;
+	width: 300px;
+	height: auto;
+	margin-top: 40px;
+	word-wrap: break-word;
+}
+.itemframe h1
+{
+	text-align: center;
+}
+.itemframe h2
+{
+	padding: 8px;
+}
+.itemframe p
+{
+	margin-top: 80px;
+	text-align: center;
+	padding: 8px;
+}
+.itemframe img
+{
+	position: absolute;
+	max-width: 50%;
+	max-height: 50%;
+	margin-left: 100px;
+	top: 80px;
+}
+
+.NameText
+{
+	position: absolute;
+	right: 2%;
+	top: 13px;
+	color: white;
+}
+.NameText img
+{
+	position: relative;
+	top: -32px;
+	left: -20px;
+}
+
+.Box
+{
+	position: relative;
+	display: block;
+	width: 200px;
+	height: 200px;
+	background-color: #222222;
+}
+.Box ul li
+{
+	display: block;
+	position: relative;
+	left: -20px;
+	margin-top: 8px;
+}
+.Box p
+{
+	position: relative;
+	text-align: center;
+	margin-top: 10px;
+	padding-top: 10px;
+	color: white;
 }
