@@ -21,7 +21,8 @@
                     name VARCHAR(100),
                     price FLOAT(24),
                     info MEDIUMTEXT,
-                    type VARCHAR(10)
+                    type VARCHAR(10),
+                    image VARCHAR(100)
                 )");
                 $co->query("CREATE TABLE users
                 (
@@ -46,25 +47,27 @@
         $sqlsoup->execute();
 
         $row = mysqli_fetch_assoc($sqlsoup->get_result());
-
-        $ISADMIN = $row["isAdmin"];
-    }
+        if(isset($row))
+            $ISADMIN = $row["isAdmin"];
+    }else
+        setcookie("CovidToken", null);
 ?>
 
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Covid19</title>
+        <title>Covid Protect</title>
         <link rel="stylesheet" href="css.css">
         <link rel="icon" href="favicon.ico">
     </head>
 
     <body>
         <div class="bar">
-            <img src="logo.png" class="logo" width="50px" height="70px">
+            <img src="logo.png" class="logo" width="50px" height="70px" onclick="window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'">
             <a href="index.php">Accueil</a>
             <a href="index.php?menu=shields">Boucliers</a>
             <a href="index.php?menu=guns">Pistolets</a>
+            <a href="index.php?menu=showall">Tout</a>
             <?php if(isset($_COOKIE["CovidToken"])): ?>
                 <a href="index.php?menu=logout">Déconnexion</a>
                 <div class="NameText">
@@ -109,7 +112,7 @@
                         <div class="itemframe">
                             <h1><?=$row["name"]?></h1>
                             <h2><?=$row["price"]."€"?></h2>
-                            <img src="placeholder.png">
+                            <img onclick="window.location.href = '<?=$row["image"]?>'" src=<?=$row["image"]?>>
                             <p><?=$row["info"]?></p>
                         </div>
 
@@ -132,7 +135,31 @@
                         <div class="itemframe">
                             <h1><?=$row["name"]?></h1>
                             <h2><?=$row["price"]."€"?></h2>
-                            <img src="placeholder.png">
+                            <img onclick="window.location.href = '<?=$row["image"]?>'" src=<?=$row["image"]?>>
+                            <p><?=$row["info"]?></p>
+                        </div>
+
+                    <?php
+
+                }
+
+                break;
+            case 'showall':
+                
+                $res = $co->query("SELECT * FROM items");
+                if($res->num_rows == 0) {
+                    echo "Aucun article ;(";
+                    break;
+                }
+
+                while ($row = mysqli_fetch_assoc($res)) {
+                    
+                    ?>
+
+                        <div class="itemframe">
+                            <h1><?=$row["name"]?></h1>
+                            <h2><?=$row["price"]."€"?></h2>
+                            <img onclick="window.location.href = '<?=$row["image"]?>'" src=<?=$row["image"]?>>
                             <p><?=$row["info"]?></p>
                         </div>
 
@@ -241,7 +268,7 @@
                         <div class="itemframe">
                             <h1><?=$row["name"]?></h1>
                             <h2><?=$row["price"]."€"?></h2>
-                            <img src="placeholder.png">
+                            <img onclick="window.location.href = '<?=$row["image"]?>'" src=<?=$row["image"]?>>
                             <p><?=$row["info"]?></p>
                         </div>
 
@@ -250,7 +277,7 @@
                 }
                 break;
             case 'admin':
-                if(isset($_COOKIE["CovidToken"])) {
+                if(isset($_COOKIE["CovidToken"]) && $_COOKIE["CovidToken"] != "locked") {
                     $sqlsoup = $co->prepare("SELECT * FROM users WHERE token LIKE ?");
                     $sqlsoup->bind_param("s", $_COOKIE["CovidToken"]);
                     $sqlsoup->execute();
@@ -261,23 +288,67 @@
                         ?>
                             <div class="Box">
                                 <p>Créateur d'objets</p>
-                                <form id="chars" action="index.php" method="post">
+                                <form id="chars" enctype="multipart/form-data" action="index.php" method="post">
                                     <ul>
                                         <li><input type="hidden" name="action" value="newitem"></li>
-                                        <li><input type="text" name="Name" placeholder="Nom" autocomplete="off" maxlength="20"></li>
+                                        <li><input type="text" name="Name" placeholder="Nom" autocomplete="off" maxlength="100"></li>
                                         <li><input type="number" name="Price" placeholder="Prix"></li>
                                         <li><input type="text" name="Info" placeholder="Description"></li>
                                         <li><input type="text" name="Type" placeholder="Type: shield, gun"></li>
-                                        <li><input type="submit" name="submit"></li>
+                                        <li><input type="file" name="itemimage" accept="image/png, image/jpeg" value="Image"></li>
+                                        <li><input type="submit" name="submit" value="Créer"></li>
                                     </ul>
                                 </form>
                             </div>
 
-                            <div class="Box">
+                            <div class="Box2">
+
                                 <p>Gestionnaire du magazin</p>
                                 <ul>
-
                                     <?php
+                                        $res = $co->query("SELECT * FROM items");
+                                        while($row = mysqli_fetch_assoc($res))
+                                        {
+                                            ?>
+                                                <li>
+                                                    <div class="itemlist">
+                                                        <p><?=$row["name"]?></p>
+                                                        <form action="index.php"  method="post">
+                                                            <input type="hidden" name="action" value="delitem">
+                                                            <input type="hidden" name="id" value="<?=$row["id"]?>">
+                                                            <button type="submit">Supp</button>
+                                                        </form>
+                                                    </div>
+                                                </li>
+                                            <?php
+                                        }
+
+                                    ?>
+
+                                </ul>
+                            </div>
+                            <div class="Box2">
+                                <p>Gestionnaire des comptes</p>
+                                <ul>
+                                    <?php
+                                        $res = $co->query("SELECT * FROM users");
+                                        while($row = mysqli_fetch_assoc($res))
+                                        {
+                                            if($row["id"] == 1)
+                                                continue;
+                                            ?>
+                                                <li>
+                                                    <div class="itemlist">
+                                                        <p><?=$row["name"]?></p>
+                                                        <form action="index.php"  method="post">
+                                                            <input type="hidden" name="action" value="deluser">
+                                                            <input type="hidden" name="id" value="<?=$row["id"]?>">
+                                                            <button type="submit">Supp</button>
+                                                        </form>
+                                                    </div>
+                                                </li>
+                                            <?php
+                                        }
 
                                     ?>
 
@@ -311,14 +382,15 @@
                             $hash = hash("sha256", $_POST["Password"], false);
                             $query = "INSERT INTO users (name, hash, token, isAdmin) VALUE (?, ?, 'locked', FALSE)";
                             $sqlsoup = $co->prepare($query);
-                            $sqlsoup->bind_param("ss", $_POST["Username"], $hash);
+                            $name = strip_tags($_POST["Username"]);
+                            $sqlsoup->bind_param("ss", $name, $hash);
                             $sqlsoup->execute();
                         }else{
                             echo "Nom déja utilisé";
                         }
 
                         ?>
-                            <h1>Compte crée avec success!</h1>
+                            <h1>Compte créé avec success!</h1>
                             <a href="index.php?menu=login">Retour a la page de connexion</a>
                         <?php
 
@@ -333,7 +405,7 @@
                         if($res->num_rows != 0) {
                             $account = mysqli_fetch_assoc($res);
                             if($account["hash"] == hash("sha256", $_POST["Password"])) {
-                                $rand = random_bytes(50);
+                                $rand = random_bytes(200);
                                 $token = hash("MD5", $rand);
                                 $query = "UPDATE users SET token = '".$token."' WHERE id = ".$account['id'];
                                 $co->query($query);
@@ -348,16 +420,60 @@
                         break;
 
                     case 'newitem':
-                        if(isset($_COOKIE["CovidToken"])) {
+                        if(isset($_COOKIE["CovidToken"]) && strtolower($_COOKIE["CovidToken"]) != "locked") {
                             $sqlsoup = $co->prepare("SELECT * FROM users WHERE token LIKE ?");
                             $sqlsoup->bind_param("s", $_COOKIE["CovidToken"]);
                             $sqlsoup->execute();
                             $row = mysqli_fetch_assoc($sqlsoup->get_result());
                             if($row["isAdmin"] == 1) {
-                                $sqlsoup = $co->prepare("INSERT INTO items (name, price, info, type) VALUE (?, ?, ?, ?)");
-                                $sqlsoup->bind_param("sdss", $_POST["Name"], $_POST["Price"], $_POST["Info"], $_POST["Type"]);
+                                $pathimage = "placeholder.png";
+                                if(isset($_FILES["itemimage"]) && preg_match("#jpeg|png#", $_FILES["itemimage"]["type"])) {
+                                    $name = hash("MD5", random_bytes(200)).".".pathinfo($_FILES["itemimage"]["name"], PATHINFO_EXTENSION);
+                                    move_uploaded_file($_FILES["itemimage"]["tmp_name"], "cache/".$name);
+                                    $pathimage = "cache/".$name;
+                                }
+                                $sqlsoup = $co->prepare("INSERT INTO items (name, price, info, type, image) VALUE (?, ?, ?, ?, ?)");
+                                $sqlsoup->bind_param("sdsss", $_POST["Name"], $_POST["Price"], $_POST["Info"], $_POST["Type"], $pathimage);
                                 $sqlsoup->execute();
-                                echo $sqlsoup->error;
+                            }
+                        }
+                        break;
+                    case 'delitem':
+                        if(isset($_COOKIE["CovidToken"]) && $_COOKIE["CovidToken"] != "locked") {
+                            $sqlsoup = $co->prepare("SELECT * FROM users WHERE token LIKE ?");
+                            $sqlsoup->bind_param("s", $_COOKIE["CovidToken"]);
+                            $sqlsoup->execute();
+                            $row = mysqli_fetch_assoc($sqlsoup->get_result());
+                            if($row["isAdmin"] == 1) {
+                                if(isset($_POST["id"])) {
+                                    $sqlsoup = $co->prepare("SELECT * FROM items WHERE id = ?");
+                                    $sqlsoup->bind_param("d", $_POST["id"]);
+                                    $sqlsoup->execute();
+                                    $row = mysqli_fetch_assoc($sqlsoup->get_result());
+                                    if($row["image"] != "placeholder.png") {
+                                        unlink($row["image"]);
+                                    }
+
+
+                                    $sqlsoup = $co->prepare("DELETE FROM items WHERE id = ?");
+                                    $sqlsoup->bind_param("d", $_POST["id"]);
+                                    $sqlsoup->execute();
+                                }
+                            }
+                        }
+                        break;
+                    case 'deluser':
+                        if(isset($_COOKIE["CovidToken"]) && $_COOKIE["CovidToken"] != "locked") {
+                            $sqlsoup = $co->prepare("SELECT * FROM users WHERE token LIKE ?");
+                            $sqlsoup->bind_param("s", $_COOKIE["CovidToken"]);
+                            $sqlsoup->execute();
+                            $row = mysqli_fetch_assoc($sqlsoup->get_result());
+                            if($row["isAdmin"] == 1) {
+                                if(isset($_POST["id"])) {
+                                    $sqlsoup = $co->prepare("DELETE FROM users WHERE id = ?");
+                                    $sqlsoup->bind_param("d", $_POST["id"]);
+                                    $sqlsoup->execute();
+                                }
                             }
                         }
                         break;
