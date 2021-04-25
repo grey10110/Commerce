@@ -56,7 +56,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Covid Protect</title>
+        <title>SAV Covid19</title>
         <link rel="stylesheet" href="css.css">
         <link rel="icon" href="favicon.ico">
     </head>
@@ -64,21 +64,21 @@
     <body>
         <div class="bar">
             <img src="logo.png" class="logo" width="50px" height="70px" onclick="window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'">
-            <a href="index.php">Accueil</a>
-            <a href="index.php?menu=shields">Boucliers</a>
-            <a href="index.php?menu=guns">Pistolets</a>
-            <a href="index.php?menu=showall">Tout</a>
+            <a href="/">Accueil</a>
+            <a href="/?menu=shields">Boucliers</a>
+            <a href="/?menu=guns">Pistolets</a>
+            <a href="/?menu=showall">Tout</a>
             <?php if(isset($_COOKIE["CovidToken"])): ?>
-                <a href="index.php?menu=logout">Déconnexion</a>
+                <a href="/?menu=logout">Déconnexion</a>
                 <div class="NameText">
                     <?php echo "<p><span style='color: #00FF00'>".$_COOKIE['CovidName']."</span></p>" ?>
                     <img src="icons/user.png">
                 </div>
                 <?php if($ISADMIN == 1): ?>
-                    <a href="index.php?menu=admin"><span style='color: #FF0000'>Admin</span></a>
+                    <a href="/?menu=admin"><span style='color: #FF0000'>Admin</span></a>
                 <?php endif; ?>
             <?php else: ?>
-                <a href="index.php?menu=login">Connexion</a>
+                <a href="/?menu=login">Connexion</a>
             <?php endif; ?>
         </div>
         <script>
@@ -86,7 +86,7 @@
             {
                 if(event.key == "Enter" && document.getElementById("searchbar").value != "")
                 {
-                    window.location.href = "index.php?menu=search&obj=".concat(document.getElementById("searchbar").value);
+                    window.location.href = "/?menu=search&obj=".concat(document.getElementById("searchbar").value);
                 }
             }
         </script>
@@ -109,10 +109,10 @@
                     
                     ?>
 
-                        <div class="itemframe">
+                        <div class="itemframe" onclick="window.location.href = ''">
                             <h1><?=$row["name"]?></h1>
                             <h2><?=$row["price"]."€"?></h2>
-                            <img onclick="window.location.href = '<?=$row["image"]?>'" src=<?=$row["image"]?>>
+                            <img onclick="window.location.href = '<?=$row["image"]?>'" ondragstart="return false" src=<?=$row["image"]?>>
                             <p><?=$row["info"]?></p>
                         </div>
 
@@ -135,7 +135,7 @@
                         <div class="itemframe">
                             <h1><?=$row["name"]?></h1>
                             <h2><?=$row["price"]."€"?></h2>
-                            <img onclick="window.location.href = '<?=$row["image"]?>'" src=<?=$row["image"]?>>
+                            <img onclick="window.location.href = '<?=$row["image"]?>'" ondragstart="return false" src=<?=$row["image"]?>>
                             <p><?=$row["info"]?></p>
                         </div>
 
@@ -159,7 +159,7 @@
                         <div class="itemframe">
                             <h1><?=$row["name"]?></h1>
                             <h2><?=$row["price"]."€"?></h2>
-                            <img onclick="window.location.href = '<?=$row["image"]?>'" src=<?=$row["image"]?>>
+                            <img onclick="window.location.href = '<?=$row["image"]?>'" ondragstart="return false" src=<?=$row["image"]?>>
                             <p><?=$row["info"]?></p>
                         </div>
 
@@ -167,6 +167,19 @@
 
                 }
 
+                break;
+            case 'more':
+                
+                if(isset($_GET["id"])) {
+                    $sqlsoup = $co->prepare("SELECT * FROM items WHERE id = ?");
+                    $sqlsoup->bind_param("i", $_GET["id"]);
+                    $sqlsoup->execute();
+                    $row = mysqli_fetch_assoc($sqlsoup->get_result());
+                    if(!isset($row))
+                        break;
+
+                    echo $row["name"];
+                }
                 break;
             case 'login':
                 ?>
@@ -186,7 +199,7 @@
                 <div class="Loginbox">
                     <h1>Connexion</h1>
                     <div>
-                        <form id="creds" onsubmit="return checkCreds()" action="index.php" method="post">
+                        <form id="creds" onsubmit="return checkCreds()" action="/" method="post">
                             <ul>
                                 <li><input type="hidden" name="action" value="login"></li>
                                 <li><input type="text" name="Username" placeholder="Nom d'Utilisateur" autocomplete="off" maxlength="20"></li>
@@ -195,7 +208,7 @@
                             </ul>
                         </form>
                     </div>
-                    <a href="index.php?menu=signin">Créer un compte</a>
+                    <a href="/?menu=signin">Créer un compte</a>
                 </div>
 
                 <?php 
@@ -223,7 +236,7 @@
                     <div class="Loginbox">
                     <h1>Création de compte</h1>
                     <div>
-                        <form id="creds" onsubmit="return checkCreds()" action="index.php" method="post">
+                        <form id="creds" onsubmit="return checkCreds()" action="/" method="post">
                             <ul>
                                 <li><input type="hidden" name="action" value="signin"></li>
                                 <li><input type="text" name="Username" placeholder="Nom d'Utilisateur" autocomplete="off" maxlength="20"></li>
@@ -243,7 +256,7 @@
                 $sqlsoup->execute();
                 setcookie("CovidToken", null);
                 setcookie("CovidName", null);
-                header("Location: index.php");
+                header("Location: /");
                 break;
             case 'search':
                 if(!isset($_GET["obj"])) {
@@ -288,11 +301,11 @@
                         ?>
                             <div class="Box">
                                 <p>Créateur d'objets</p>
-                                <form id="chars" enctype="multipart/form-data" action="index.php" method="post">
+                                <form id="chars" enctype="multipart/form-data" action="/" method="post">
                                     <ul>
                                         <li><input type="hidden" name="action" value="newitem"></li>
                                         <li><input type="text" name="Name" placeholder="Nom" autocomplete="off" maxlength="100"></li>
-                                        <li><input type="number" name="Price" placeholder="Prix"></li>
+                                        <li><input type="number" step="any" name="Price" placeholder="Prix"></li>
                                         <li><input type="text" name="Info" placeholder="Description"></li>
                                         <li><input type="text" name="Type" placeholder="Type: shield, gun"></li>
                                         <li><input type="file" name="itemimage" accept="image/png, image/jpeg" value="Image"></li>
@@ -313,7 +326,7 @@
                                                 <li>
                                                     <div class="itemlist">
                                                         <p><?=$row["name"]?></p>
-                                                        <form action="index.php"  method="post">
+                                                        <form action="/"  method="post">
                                                             <input type="hidden" name="action" value="delitem">
                                                             <input type="hidden" name="id" value="<?=$row["id"]?>">
                                                             <button type="submit">Supp</button>
@@ -340,7 +353,7 @@
                                                 <li>
                                                     <div class="itemlist">
                                                         <p><?=$row["name"]?></p>
-                                                        <form action="index.php"  method="post">
+                                                        <form action="/"  method="post">
                                                             <input type="hidden" name="action" value="deluser">
                                                             <input type="hidden" name="id" value="<?=$row["id"]?>">
                                                             <button type="submit">Supp</button>
@@ -386,14 +399,9 @@
                             $sqlsoup->bind_param("ss", $name, $hash);
                             $sqlsoup->execute();
                         }else{
-                            echo "Nom déja utilisé";
+                            echo "<script>alert('Nom déja utilisé')</script>";
+                            break;
                         }
-
-                        ?>
-                            <h1>Compte créé avec success!</h1>
-                            <a href="index.php?menu=login">Retour a la page de connexion</a>
-                        <?php
-
                         break;
                     case 'login':
                         if(!($_POST["Username"] && $_POST["Password"]))
@@ -411,7 +419,7 @@
                                 $co->query($query);
                                 setcookie("CovidToken", $token);
                                 setcookie("CovidName", $account["name"]);
-                                header("Location: index.php");
+                                header("Location: /");
                             }else
                                 echo "<h1>Utilisateur ou mot de passe incorrect</h1>";
 
@@ -426,6 +434,8 @@
                             $sqlsoup->execute();
                             $row = mysqli_fetch_assoc($sqlsoup->get_result());
                             if($row["isAdmin"] == 1) {
+                                if(!file_exists("cache/"))
+                                    mkdir("cache");
                                 $pathimage = "placeholder.png";
                                 if(isset($_FILES["itemimage"]) && preg_match("#jpeg|png#", $_FILES["itemimage"]["type"])) {
                                     $name = hash("MD5", random_bytes(200)).".".pathinfo($_FILES["itemimage"]["name"], PATHINFO_EXTENSION);
@@ -435,6 +445,7 @@
                                 $sqlsoup = $co->prepare("INSERT INTO items (name, price, info, type, image) VALUE (?, ?, ?, ?, ?)");
                                 $sqlsoup->bind_param("sdsss", $_POST["Name"], $_POST["Price"], $_POST["Info"], $_POST["Type"], $pathimage);
                                 $sqlsoup->execute();
+                                header("Location: /?menu=admin");
                             }
                         }
                         break;
@@ -458,6 +469,7 @@
                                     $sqlsoup = $co->prepare("DELETE FROM items WHERE id = ?");
                                     $sqlsoup->bind_param("d", $_POST["id"]);
                                     $sqlsoup->execute();
+                                    header("Location: /?menu=admin");
                                 }
                             }
                         }
@@ -473,6 +485,7 @@
                                     $sqlsoup = $co->prepare("DELETE FROM users WHERE id = ?");
                                     $sqlsoup->bind_param("d", $_POST["id"]);
                                     $sqlsoup->execute();
+                                    header("Location: /?menu=admin");
                                 }
                             }
                         }
@@ -482,5 +495,19 @@
                         break;
                 }
             }
+            ?>
+                <div class="titlebox">
+                    <p>Notre entreprise Service Après Vente Covid a été créée pour ralentir la pandémie mondiale en proposant la vente de produits accessibles à tous et à des prix “abordables”</p>
+                </div>
+                <div class="titlebox">
+                    <p>Équipe:<br><br>
+                        -Loik Dijoux<br>
+                        -Jordan Palacios<br>
+                        -Antonin Laudon<br>
+                        -Theophilus Homawoo<br>
+                        -Bartosz Michalak</p>
+                </div>
+                <img src="gouv.png" class="gouv">
+            <?php
         }
 ?>
